@@ -19,10 +19,10 @@ export default grammar({
     /[ \t]/,
   ],
   rules: {
-    source_file: $ => repeat($.line),
-    line: $ => seq(
+    start: $ => repeat($._line),
+    _line: $ => seq(
       repeat($.label),
-      optional($.directive),
+      optional($._directive),
       optional($.comment),
       /\r?\n/,
     ),
@@ -31,19 +31,28 @@ export default grammar({
     label: $ => seq($.identifier, token.immediate(':')),
     number: $ => /[0-9]+/,
 
-    directive: $ => choice(
+    _directive: $ => choice(
       $.instruction,
-      $.data_directive,
-      $.ascii_directive,
+      $.data,
+      $.ascii,
     ),
 
+    parenthesized: $ => seq($.lparen, $.expression, $.rparen),
+    add: $ => '+',
+    sub: $ => '-',
+    mul: $ => '*',
+    div: $ => '/',
+    unary_op: $ => choice($.add, $.sub),
+    lparen: $ => '(',
+    rparen: $ => ')',
+
     expression: $ => choice(
-      $.number,
-      $.identifier,
-      prec(2, seq('(', $.expression, ')')),
-      prec.left(2, seq($.expression, /[*/]/, $.expression)),
-      prec.left(1, seq($.expression, /[+-]/, $.expression)),
-      prec.right(0, seq(/[+-]/, $.expression)),
+      prec(5, $.parenthesized),
+      prec.left(4, $.parenthesized),
+      prec.left(3, seq($.expression, choice($.mul, $.div), $.expression)),
+      prec.left(2, seq($.expression, choice($.add, $.sub), $.expression)),
+      prec(1, seq($.unary_op, $.expression)),
+      prec(0, choice( $.number, $.identifier)),
     ),
 
     positional: $ => $.expression,
@@ -57,55 +66,25 @@ export default grammar({
       $.relative,
     ),
 
-    _params: $ => seq($.parameter, optional(seq(',', $._params))),
-    _param_3: $ => seq($.parameter, ',', $.parameter, ',', $.parameter),
-    _param_2: $ => seq($.parameter, ',', $.parameter),
-
-    mismatched_instrunction: $ => seq(
-      new RustRegex("((?i)ADD|MUL|IN|OUT|JNZ|JZ|S?LT|S?EQ|(RBO|INCB)|HALT)"),
-      / \t/,
-      $._params
-    ),
+    _params: $ => seq($.parameter, optional(seq($.sep, $._params))),
 
     mnemonic: $ => token(prec(1, new RustRegex("((?i)ADD|MUL|IN|OUT|JNZ|JZ|S?LT|S?EQ|(RBO|INCB)|HALT)"))),
-
-    _op3: $ => seq(
-      choice(
-        kw("ADD", 'ADD'),
-        kw("MUL", 'MUL'),
-        kw("S?LT", 'LT'),
-        kw("S?EQ", 'EQ'),
-      ),
-      / \t/, $._param_3
-    ),
-    _op2: $ => seq(
-      choice(kw("JZ", 'JZ'), kw("JNZ", "JNZ")), 
-      / \t/, $._param_2
-    ),
-    _op1: $ => seq(
-      choice(
-        kw("IN", 'IN'),
-        kw("OUT", 'OUT'),
-        kw("RBO|INCB", 'RBO'),
-      ),
-      / \t/, $.parameter
-    ),
-    _op0: $ => kw("HALT", 'HALT'),
 
     instruction: $ => seq(
       $.mnemonic,
       optional($._params)
     ),
 
+    sep: $ => ',',
 
-
-    data_directive: $ => seq(
+    data: $ => seq(
       new RustRegex("((?i)DATA)[ \\t]"), 
-      repeat(seq($.expression, ',')),
+      repeat(seq($.expression, $.sep)),
       $.expression
     ),
-    ascii_string: $ => /"([^"\\]|(\\([\\'"ntre]|3?[0-7]{1,2}|x[0-9a-fA-F]{2})))*"/,
-    ascii_directive: $ => seq(
+    ascii_char_escaped: $ => token.immediate(/\\([\\'"ntre]|3?[0-7]{1,2}|x[0-9a-fA-F]{2})/),
+    ascii_string: $ => seq('"', repeat(choice(token.immediate(/[^"\\]/), $.ascii_char_escaped)), token.immediate('"')),
+    ascii: $ => seq(
       new RustRegex("((?i)ASCII)[ \\t]"), 
       $.ascii_string,
     ),
