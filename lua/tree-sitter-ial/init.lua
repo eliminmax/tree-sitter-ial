@@ -14,6 +14,7 @@ function M.setup(arg)
             }
         end
     }
+    vim.treesitter.language.register('ial', { 'ial' })
 end
 
 return M
