@@ -9,7 +9,6 @@
       "file-types": [
         "ial"
       ],
-      "highlights": "queries/highlights.scm",
       "injection-regex": "^ial$",
       "class-name": "TreeSitterIal"
     }
