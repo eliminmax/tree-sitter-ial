@@ -7,11 +7,11 @@
 (expression ((expression) (mul) @operator (expression)))
 (expression ((expression) (div) @operator (expression)))
 (comment) @comment
-(label (identifier) @variable) @tag
+(label (identifier) @constant) @punctuation.delimiter
 (instruction (mnemonic) @keyword)
 (sep) @punctuation.delimiter
 (expression (number)) @number
-(expression (identifier)) @variable
+(expression (identifier)) @constant
 (parenthesized ((lparen) @punctuation.bracket (expression) (rparen) @punctuation.bracket))
 (parameter (immediate (expression)) @attribute)
 (parameter (relative (expression)) @attribute)
