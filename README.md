@@ -2,6 +2,8 @@
 
 A minimal Treesitter grammar for [IAL](https://github.com/eliminmax/ial), the Intcode assembly dialect I designed, usable as a Neovim plugin.
 
+**DOESN'T WORK YET**
+
 Vim plugin functionality is made with reference to [tree-sitter-just](https://github.com/IndianBoy42/tree-sitter-just).
 
 Requries [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
