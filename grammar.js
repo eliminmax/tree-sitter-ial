@@ -83,6 +83,7 @@ export default grammar({
       $.expression
     ),
     ascii_char_escaped: $ => token.immediate(/\\([\\'"ntre]|3?[0-7]{1,2}|x[0-9a-fA-F]{2})/),
+    ascii_char_literal: $ => seq("'", choice(token.immediate(/[^'\\]/), $.ascii_char_escaped), "'"),
     ascii_string: $ => seq('"', repeat(choice(token.immediate(/[^"\\]/), $.ascii_char_escaped)), token.immediate('"')),
     ascii: $ => seq(
       new RustRegex("((?i)ASCII)[ \\t]"), 
