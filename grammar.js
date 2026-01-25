@@ -8,7 +8,7 @@
 // @ts-check
 
 // convert pattern into a case-insensive RustRegex, using 'canon' as its valid form
-const kw = (pattern, canon) => alias(new RustRegex("((?i)" + pattern + ")"), canon);
+const kw = (pattern, canon = pattern) => alias(token(prec(2, new RustRegex("((?i)" + pattern + ")"))), canon);
 
 export default grammar({
   name: 'ial',
@@ -27,8 +27,10 @@ export default grammar({
       /\r?\n/,
     ),
     comment: $ => /;.*/,
-    identifier: $ => new RustRegex("[\\p{ID_Start}_][\\p{ID_Continue}]*"),
     label: $ => seq($.identifier, token.immediate(':')),
+
+
+    identifier: $ => new RustRegex("[\\p{ID_Start}_][\\p{ID_Continue}]*"),
     number: $ => /[0-9]+/,
 
     _directive: $ => choice(
@@ -54,10 +56,23 @@ export default grammar({
       prec(0, choice( $.number, $.identifier, $.ascii_char_literal)),
     ),
 
+    _op3: $ => seq(
+        choice(kw("ADD"), kw("MUL"), kw("S?LT", "LT"), kw("S?EQ", "EQ")),
+        $.parameter, $.sep, $.parameter, $.sep, $.parameter
+    ),
+    _op2: $ => seq(
+        choice(kw("JNZ"), kw("JZ")),
+        $.parameter, $.sep, $.parameter
+    ),
+    _op1: $ => seq(
+        choice(kw("IN"), kw("OUT"), kw("RBO|INCB", "RBO")),
+        $.parameter
+    ),
+    _op0: $ => kw("HALT"),
+
     positional: $ => $.expression,
     immediate: $ => seq('#', $.expression),
     relative: $ => seq('@', $.expression),
-    
 
     parameter: $ => choice(
       $.positional,
@@ -65,14 +80,7 @@ export default grammar({
       $.relative,
     ),
 
-    _params: $ => seq($.parameter, optional(seq($.sep, $._params))),
-
-    mnemonic: $ => token(prec(1, new RustRegex("((?i)ADD|MUL|IN|OUT|JNZ|JZ|S?LT|S?EQ|(RBO|INCB)|HALT)"))),
-
-    instruction: $ => seq(
-      $.mnemonic,
-      optional($._params)
-    ),
+    instruction: $ => choice($._op0, $._op1, $._op2, $._op3),
 
     sep: $ => ',',
 
