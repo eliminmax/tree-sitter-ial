@@ -14,3 +14,7 @@
 !/queries/**
 !/ftdetect
 !/ftdetect/**
+!/ftplugin
+!/ftplugin/**
+!/plugin
+!/plugin/**
