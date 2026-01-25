@@ -42,7 +42,7 @@ export default grammar({
     sub: $ => '-',
     mul: $ => '*',
     div: $ => '/',
-    unary_op: $ => choice($.add, $.sub),
+    unary_op: $ => seq(choice($.add, $.sub), $.expression),
     lparen: $ => '(',
     rparen: $ => ')',
 
@@ -51,7 +51,7 @@ export default grammar({
       prec.left(4, $.parenthesized),
       prec.left(3, seq($.expression, choice($.mul, $.div), $.expression)),
       prec.left(2, seq($.expression, choice($.add, $.sub), $.expression)),
-      prec(1, seq($.unary_op, $.expression)),
+      prec(1, $.unary_op),
       prec(0, choice( $.number, $.identifier, $.ascii_char_literal)),
     ),
 
