@@ -3,12 +3,16 @@
 # SPDX-License-Identifier: 0BSD
 
 *
-!.gitignore
-!README.md
-!tree-sitter.json
-!grammar.js
-!LICENSE
-!queries
-!queries/**
-!ftdetect
-!ftdetect/**
+!/.gitignore
+!/README.md
+!/tree-sitter.json
+!/grammar.js
+!/LICENSE
+!/queries
+!/queries/**
+!/ftdetect
+!/ftdetect/**
+!/ftplugin
+!/ftplugin/**
+!/plugin
+!/plugin/**
