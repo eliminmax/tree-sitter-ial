@@ -1,17 +1,28 @@
-(mnemonic) @function
-(ascii (ascii_string) @string) @function.builtin
-(data) @tag
-(ascii_string (ascii_char_escaped) @string.special)
-(expression ((expression) (add) @operator (expression)))
-(expression ((expression) (sub) @operator (expression)))
-(expression ((expression) (mul) @operator (expression)))
-(expression ((expression) (div) @operator (expression)))
+(ascii_string) @string
+(ascii_char_literal) @number
+(ascii_char_escaped) @string.special
+"DATA" @keyword
+"ASCII" @keyword
+
+(unary_op (_) (expression (number))) @number
+(add) @operator
+(sub) @operator
+(mul) @operator
+(div) @operator
 (comment) @comment
-(label (identifier) @constant) @punctuation.delimiter
-(instruction (mnemonic) @keyword)
+(label) @punctuation.delimiter
 (sep) @punctuation.delimiter
-(expression (number)) @number
-(expression (identifier)) @constant
-(parenthesized ((lparen) @punctuation.bracket (expression) (rparen) @punctuation.bracket))
-(parameter (immediate (expression)) @attribute)
-(parameter (relative (expression)) @attribute)
+(expression) @expression
+
+(unary_op (sub) (expression (number))) @number
+(mnemonic) @keyword
+(number) @number
+(identifier) @variable
+(lparen) @punctuation.bracket
+(rparen) @punctuation.bracket
+
+(parameter (immediate "#" @attribute (expression)))
+(parameter (relative "@" @attribute (expression)))
+
+(MISSING) @missing-node
+(ERROR) @error-node
