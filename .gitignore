@@ -10,3 +10,5 @@
 !LICENSE
 !queries
 !queries/**
+!ftdetect
+!ftdetect/**
