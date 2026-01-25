@@ -52,7 +52,7 @@ export default grammar({
       prec.left(3, seq($.expression, choice($.mul, $.div), $.expression)),
       prec.left(2, seq($.expression, choice($.add, $.sub), $.expression)),
       prec(1, seq($.unary_op, $.expression)),
-      prec(0, choice( $.number, $.identifier)),
+      prec(0, choice( $.number, $.identifier, $.ascii_char_literal)),
     ),
 
     positional: $ => $.expression,
