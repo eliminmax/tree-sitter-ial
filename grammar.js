@@ -47,8 +47,7 @@ export default grammar({
     rparen: $ => ')',
 
     expression: $ => choice(
-      prec(5, $.parenthesized),
-      prec.left(4, $.parenthesized),
+      prec(4, $.parenthesized),
       prec.left(3, seq($.expression, choice($.mul, $.div), $.expression)),
       prec.left(2, seq($.expression, choice($.add, $.sub), $.expression)),
       prec(1, $.unary_op),
