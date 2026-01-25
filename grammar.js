@@ -78,7 +78,7 @@ export default grammar({
     sep: $ => ',',
 
     data: $ => seq(
-      new RustRegex("((?i)DATA)[ \\t]"), 
+      alias(new RustRegex("((?i)DATA)[ \\t]"),  "DATA"),
       repeat(seq($.expression, $.sep)),
       $.expression
     ),
@@ -86,7 +86,7 @@ export default grammar({
     ascii_char_literal: $ => seq("'", choice(token.immediate(/[^'\\]/), $.ascii_char_escaped), "'"),
     ascii_string: $ => seq('"', repeat(choice(token.immediate(/[^"\\]/), $.ascii_char_escaped)), token.immediate('"')),
     ascii: $ => seq(
-      new RustRegex("((?i)ASCII)[ \\t]"), 
+      alias(new RustRegex("((?i)ASCII)[ \\t]"), "ASCII"), 
       $.ascii_string,
     ),
   }
