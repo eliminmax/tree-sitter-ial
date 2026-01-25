@@ -1,3 +1,4 @@
+vim.treesitter.language.register('ial', { 'ial' })
 -- hook into TSUpdate
 vim.api.nvim_create_autocmd('User', { pattern = 'TSUpdate',
     callback = function()
