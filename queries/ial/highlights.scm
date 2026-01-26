@@ -12,8 +12,8 @@
 (label(_) ":" @punctuation.special)
 (sep) @punctuation.delimiter
 (expression) @expression
-(unary_op (sub) (expression (number))) @number
-(instruction _ @function.builtin)
+((unary_op (sub).(expression (number))) @number (#set! priority 105))
+(instruction . _ @function.builtin _*)
 (number) @number
 (identifier) @label
 (lparen) @punctuation.bracket
