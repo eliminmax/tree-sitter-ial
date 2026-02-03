@@ -18,8 +18,8 @@
 (identifier) @label
 (lparen) @punctuation.bracket
 (rparen) @punctuation.bracket
-(parameter (immediate "#" @attribute (expression)))
-(parameter (relative "@" @attribute (expression)))
+(parameter (immediate "#" @attribute _*))
+(parameter (relative "@" @attribute _*))
 
 (MISSING) @missing-node
 (ERROR) @error-node
