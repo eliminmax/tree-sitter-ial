@@ -70,9 +70,9 @@ export default grammar({
     ),
     _op0: $ => kw("HALT"),
 
-    positional: $ => $.expression,
-    immediate: $ => seq('#', $.expression),
-    relative: $ => seq('@', $.expression),
+    positional: $ => seq(optional($.label), $.expression),
+    immediate: $ => seq('#', optional($.label), $.expression),
+    relative: $ => seq('@', optional($.label), $.expression),
 
     parameter: $ => choice(
       $.positional,
