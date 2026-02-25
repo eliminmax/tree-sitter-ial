@@ -49,11 +49,10 @@ export default grammar({
     rparen: $ => ')',
 
     expression: $ => choice(
-      prec(4, $.parenthesized),
-      prec.left(3, seq($.expression, choice($.mul, $.div), $.expression)),
-      prec.left(2, seq($.expression, choice($.add, $.sub), $.expression)),
-      prec(1, $.unary_op),
-      prec(0, choice( $.number, $.identifier, $.ascii_char_literal)),
+      prec(4, choice($.number, $.identifier, $.ascii_char_literal, $.parenthesized)),
+      prec(3, $.unary_op),
+      prec.left(2, seq($.expression, choice($.mul, $.div), $.expression)),
+      prec.left(1, seq($.expression, choice($.add, $.sub), $.expression)),
     ),
 
     _op3: $ => seq(
